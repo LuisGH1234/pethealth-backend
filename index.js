@@ -7,7 +7,7 @@ const mysqlConnection = require('./connection');
 mysqlConnection.query = util.promisify(mysqlConnection.query);
 
 // Settings
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 3001);
 //Middleware
 //si estamos recibiendo un json lo convierte y sera accesible en las rutas
 app.use(express.json());
@@ -22,9 +22,15 @@ app.use((e, req, res, next) => {
     );
 });
 
+app.use((req, res, next) => {
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', '*');
+    res.set('Access-Control-Allow-Headers', '*');
+    next();
+})
 // Routes
 app.post('/api/register', async (req, res) => {
-    res.set('Access-Control-Allow-Origin', '*');
+    // res.set('Access-Control-Allow-Origin', '*');
     const { name = '', email= '' } = req.body;
     const date = moment().format("YYYY-MM-DD HH:mm:ss");
     let sql = 'INSERT INTO pethealth(name, email, date) values (?, ?, ?)';
@@ -38,7 +44,7 @@ app.post('/api/register', async (req, res) => {
 });
 
 app.get('/api/register', async (_, res) => {
-    res.set('Access-Control-Allow-Origin', '*');
+    // res.set('Access-Control-Allow-Origin', '*');
 
     let sql = 'SELECT * FROM pethealth';
     try {
