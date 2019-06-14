@@ -31,8 +31,12 @@ app.use((req, res, next) => {
 // Routes
 app.post('/api/register', async (req, res) => {
     // res.set('Access-Control-Allow-Origin', '*');
-    const { name = '', email= '' } = req.body;
-    const date = moment().format("YYYY-MM-DD HH:mm:ss");
+    const { 
+        name, 
+        email, 
+        date = moment().format("YYYY-MM-DD HH:mm:ss"),
+    } = req.body;
+    
     let sql = 'INSERT INTO pethealth(name, email, date) values (?, ?, ?)';
     try {
         await mysqlConnection.query(sql, [name, email, date]);
