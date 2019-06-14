@@ -47,19 +47,22 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
-app.get('/api/register', async (_, res) => {
+app.get('/api/register', async (req, res) => {
     // res.set('Access-Control-Allow-Origin', '*');
-
-    let sql = 'SELECT * FROM pethealth';
+    const { clean = 'true' } = req.query;
+    const sql = 'SELECT * FROM pethealth';
     try {
-        const registrations = await mysqlConnection.query(sql);
-        return res.status(200).json({ registrations });
+        const result = await mysqlConnection.query(sql);
+        return res.status(200).json({ 
+            registrations: clean == 'true' ? 
+                result.map(x => ({ name: x.name, email: x.email })) :
+                result
+        });
     } catch (error) {
         console.log(error);
         return res.status(404).json({ status: "error", error });
     }
 });
-
 
 // Report
 app.listen(app.get('port'), () => {
